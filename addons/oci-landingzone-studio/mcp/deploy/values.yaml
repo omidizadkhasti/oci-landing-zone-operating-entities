@@ -1,0 +1,23 @@
+image:
+  repository: ""
+  digest: ""
+imagePullSecret: ocir-pull-secret
+tlsSecret: landingzone-mcp-tls
+clientsSecret: landingzone-mcp-clients
+storageClass: oci-bv
+storageSize: 50Gi
+nodeSelector: {}
+tolerations: []
+allowedCallerNamespaces:
+  - codex-runtime
+  - planning-agent
+  - planning-agent-v4
+  - mcp
+  - oci-landing-zone
+resources:
+  requests:
+    cpu: 500m
+    memory: 768Mi
+  limits:
+    cpu: "2"
+    memory: 2Gi

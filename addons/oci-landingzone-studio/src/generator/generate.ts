@@ -90,11 +90,36 @@ export function generateFromUpstreamDefaults(profile: string): Promise<Record<st
 }
 
 /** Run the generator over a wizard model. */
-export async function generateOutputs(model: LzModel): Promise<GeneratedOutputs> {
+function validateModel(model: LzModel): void {
   const issues = [...validatePlatformContracts(model), ...validateOkeModel(model), ...validateExadataModel(model), ...validateRemotePeering(model), ...validateRegionalDeployment(model)];
   const shortNameError = regionShortNameError(model.foundation.regionShortName);
   if (shortNameError) issues.push(shortNameError);
   if (issues.length) throw new GeneratorError(issues.join('\n'));
+}
+
+/** Full files and diagram compartment inventory from one evaluation, including regional stacks without IAM output. */
+export async function generateOutputSnapshot(model: LzModel): Promise<GeneratedOutputs & { compartments: unknown }> {
+  validateModel(model);
+  const config = serializeConfig(model);
+  const { files } = buildVirtualFs();
+  const entry = 'studio_output_snapshot.jsonnet';
+  const result = await evaluate(entry, {
+    ...files,
+    [entry]: `function(config)
+      local outputs = (import 'landing_zone_multi.jsonnet')(config);
+      { outputs: outputs,
+        compartments: if std.objectHas(outputs, 'iam.json') then outputs['iam.json'].compartments_configuration
+          else (import 'landing_zone.libsonnet')(config).iam.compartments_configuration,
+      }`,
+  }, { config });
+  if (!isFileMap(result) || !isFileMap(result.outputs)) throw new GeneratorError('Invalid generator snapshot.');
+  const generated = Object.fromEntries(Object.entries(result.outputs).map(([name, body]) => [name, `${JSON.stringify(body, null, 4)}\n`]));
+  const primary = PRIMARY_OUTPUTS.filter((name) => name in generated);
+  return { config, files: generated, primary, secondary: Object.keys(generated).filter((name) => !primary.includes(name as never)).sort(), compartments: result.compartments };
+}
+
+export async function generateOutputs(model: LzModel): Promise<GeneratedOutputs> {
+  validateModel(model);
   const config = serializeConfig(model);
   const files = await generateFromConfigCode(config);
   const primary = PRIMARY_OUTPUTS.filter((name) => name in files);

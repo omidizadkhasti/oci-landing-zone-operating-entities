@@ -1,0 +1,11 @@
+**/node_modules
+**/dist
+.git
+**/.npm
+**/*.local
+**/data
+**/libjsonnet.wasm
+**/.runtime-build-fingerprint
+**/*.pem
+**/*.key
+**/.env*

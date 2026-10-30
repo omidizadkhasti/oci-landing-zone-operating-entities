@@ -1,0 +1,165 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: landingzone-mcp
+automountServiceAccountToken: false
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: landingzone-mcp-data
+  annotations:
+    helm.sh/resource-policy: keep
+spec:
+  accessModes: [ReadWriteOnce]
+  storageClassName: {{ .Values.storageClass | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.storageSize | quote }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: landingzone-mcp
+spec:
+  type: ClusterIP
+  selector:
+    app: landingzone-mcp
+  ports:
+    - name: https-mcp
+      port: 8443
+      targetPort: https-mcp
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: landingzone-mcp
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: landingzone-mcp
+  template:
+    metadata:
+      labels:
+        app: landingzone-mcp
+    spec:
+      serviceAccountName: landingzone-mcp
+      automountServiceAccountToken: false
+      terminationGracePeriodSeconds: 20
+{{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+{{- end }}
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      imagePullSecrets:
+        - name: {{ .Values.imagePullSecret }}
+      containers:
+        - name: mcp
+          image: {{ required "image.repository is required" .Values.image.repository }}@{{ required "image.digest is required" .Values.image.digest }}
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: https-mcp
+              containerPort: 8443
+            - name: health
+              containerPort: 8081
+          env:
+            - name: LZ_DATA_DIR
+              value: /data
+            - name: LZ_CLIENTS_FILE
+              value: /clients/clients.json
+            - name: LZ_TLS_CERT_FILE
+              value: /tls/tls.crt
+            - name: LZ_TLS_KEY_FILE
+              value: /tls/tls.key
+            - name: LZ_TLS_CA_FILE
+              value: /tls/ca.crt
+            - name: LZ_ALLOWED_HOSTS
+              value: "landingzone-mcp:8443,landingzone-mcp.{{ .Release.Namespace }}:8443,landingzone-mcp.{{ .Release.Namespace }}.svc:8443,landingzone-mcp.{{ .Release.Namespace }}.svc.cluster.local:8443,localhost:8443"
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
+          startupProbe:
+            httpGet:
+              path: /readyz
+              port: health
+            failureThreshold: 30
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: health
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: health
+            periodSeconds: 20
+          volumeMounts:
+            - name: data
+              mountPath: /data
+            - name: temporary
+              mountPath: /tmp
+            - name: tls
+              mountPath: /tls
+              readOnly: true
+            - name: clients
+              mountPath: /clients
+              readOnly: true
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: landingzone-mcp-data
+        - name: temporary
+          emptyDir:
+            sizeLimit: 64Mi
+        - name: tls
+          secret:
+            secretName: {{ .Values.tlsSecret }}
+            defaultMode: 0440
+        - name: clients
+          secret:
+            secretName: {{ .Values.clientsSecret }}
+            defaultMode: 0440
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: landingzone-mcp-isolation
+spec:
+  podSelector:
+    matchLabels:
+      app: landingzone-mcp
+  policyTypes: [Ingress, Egress]
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchExpressions:
+              - key: kubernetes.io/metadata.name
+                operator: In
+                values:
+{{ toYaml .Values.allowedCallerNamespaces | indent 18 }}
+          podSelector:
+            matchLabels:
+              oci-landing-zone-client: "true"
+      ports:
+        - protocol: TCP
+          port: 8443
+  egress: []

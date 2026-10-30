@@ -1,0 +1,96 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: landingzone-smoke-egress
+  namespace: oci-landing-zone
+spec:
+  podSelector:
+    matchLabels:
+      app: landingzone-mcp-smoke
+  policyTypes: [Egress]
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+    - to:
+        - podSelector:
+            matchLabels:
+              app: landingzone-mcp
+      ports:
+        - protocol: TCP
+          port: 8443
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: landingzone-mcp-smoke
+  namespace: oci-landing-zone
+spec:
+  backoffLimit: 0
+  activeDeadlineSeconds: 180
+  ttlSecondsAfterFinished: 3600
+  template:
+    metadata:
+      labels:
+        app: landingzone-mcp-smoke
+        oci-landing-zone-client: "true"
+    spec:
+      restartPolicy: Never
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      imagePullSecrets:
+        - name: ocir-pull-secret
+      containers:
+        - name: smoke
+          # Operator replaces this with the exact deployed image digest.
+          image: REPLACE_WITH_DEPLOYED_IMAGE_DIGEST
+          command: [node, /app/smoke.mjs]
+          env:
+            - name: LZ_MCP_URL
+              value: https://landingzone-mcp.oci-landing-zone.svc.cluster.local:8443/mcp
+            - name: LZ_CLIENT_CA_FILE
+              value: /client/ca.crt
+            - name: LZ_CLIENT_CERT_FILE
+              value: /client/client.crt
+            - name: LZ_CLIENT_KEY_FILE
+              value: /client/client.key
+            - name: LZ_SMOKE_BUNDLE_FILE
+              value: /tmp/bundle.zip
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: "1"
+              memory: 256Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
+          volumeMounts:
+            - name: client
+              mountPath: /client
+              readOnly: true
+            - name: temporary
+              mountPath: /tmp
+      volumes:
+        - name: client
+          secret:
+            secretName: landingzone-mcp-smoke-client
+            defaultMode: 0440
+        - name: temporary
+          emptyDir:
+            sizeLimit: 16Mi

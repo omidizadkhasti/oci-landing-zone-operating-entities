@@ -76,7 +76,12 @@ upstream chunk-size warning. No application source or dependency versions change
 
 ## Later planning-agent integration
 
-There is no HTTP API in the inspected Studio implementation. Candidate reuse
+An optional headless MCP pilot is now implemented in [`mcp/README.md`](mcp/README.md).
+Its service contract and current verification are in
+[`mcp/SECURITY-READINESS.md`](mcp/SECURITY-READINESS.md). The notes below describe
+the initial upstream assessment and candidate integration points.
+
+There was no HTTP API in the initial upstream Studio implementation. Candidate reuse
 points, relative to this directory, are:
 
 | Stage | Existing source |

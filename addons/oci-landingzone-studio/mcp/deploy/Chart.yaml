@@ -1,0 +1,6 @@
+apiVersion: v2
+name: oci-landing-zone-mcp
+description: Internal authenticated headless OCI Landing Zone Studio MCP service
+type: application
+version: 0.1.0
+appVersion: 0.1.0

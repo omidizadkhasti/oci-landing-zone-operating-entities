@@ -6,7 +6,7 @@ import reactRefresh from 'eslint-plugin-react-refresh'
 
 export default tseslint.config(
   // `3rd/go-jsonnet` contains generated Go runtime assets, not application source.
-  { ignores: ['dist', '3rd', 'node_modules'] },
+  { ignores: ['dist', '3rd', 'node_modules', 'mcp/dist/**', 'mcp/node_modules/**'] },
 
   // Frontend code (TS/TSX + any remaining JS/JSX).
   {
@@ -44,7 +44,7 @@ export default tseslint.config(
 
   // Node tooling: Vite config and build scripts.
   {
-    files: ['vite.config.ts', 'scripts/**/*.mjs'],
+    files: ['vite.config.ts', 'scripts/**/*.mjs', 'mcp/src/**/*.ts', 'mcp/*.mjs', 'mcp/test/**/*.mjs'],
     languageOptions: {
       globals: { ...globals.node, ...globals.es2022 },
     },
