@@ -52,6 +52,18 @@ jobs:
           npm audit --audit-level=moderate --registry=https://registry.npmjs.org --prefix mcp
           cd mcp
           npm sbom --omit=dev --sbom-format=cyclonedx > mcp-sbom.cdx.json
+      - name: Check portable skill contract against the service
+        working-directory: addons/oci-landingzone-studio/mcp
+        run: |
+          node --input-type=module <<'JS'
+          import assert from 'node:assert/strict';
+          import {readFile} from 'node:fs/promises';
+          import {runEngine} from './dist/engine.mjs';
+          const root='../skills/oci-landing-zone-planning/references/';
+          const json=async path=>JSON.parse(await readFile(path,'utf8'));
+          assert.deepEqual(await json(root+'design.schema.json'),await json('./dist/design.schema.json'));
+          assert.equal((await runEngine('validate',await json(root+'example-design.json'))).validation.valid,true);
+          JS
       - name: Verify container packaging without publishing credentials or images
         working-directory: .
         run: docker build -f addons/oci-landingzone-studio/mcp/Dockerfile -t studio-mcp:ci .

@@ -1,0 +1,989 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "const": "1.0"
+    },
+    "projectId": {
+      "type": "string",
+      "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$"
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 1000000
+    },
+    "name": {
+      "type": "string",
+      "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$"
+    },
+    "configuration": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "type": "string",
+          "const": "0.20.0"
+        },
+        "foundation": {
+          "type": "object",
+          "properties": {
+            "stackScope": {
+              "type": "string",
+              "enum": [
+                "complete",
+                "regional"
+              ]
+            },
+            "homeRegion": {
+              "type": "string",
+              "maxLength": 1024
+            },
+            "drRegion": {
+              "type": "string",
+              "maxLength": 1024
+            },
+            "description": {
+              "type": "string",
+              "maxLength": 1024
+            },
+            "realm": {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$"
+            },
+            "region": {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$"
+            },
+            "regionShortName": {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$"
+            },
+            "cisLevel": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "const": 1
+                },
+                {
+                  "type": "number",
+                  "const": 2
+                }
+              ]
+            },
+            "notifications": {
+              "type": "object",
+              "properties": {
+                "useSingleRecipient": {
+                  "type": "boolean"
+                },
+                "default": {
+                  "type": "string",
+                  "maxLength": 1024
+                },
+                "cloudguard": {
+                  "type": "string",
+                  "maxLength": 1024
+                },
+                "iam": {
+                  "type": "string",
+                  "maxLength": 1024
+                },
+                "network": {
+                  "type": "string",
+                  "maxLength": 1024
+                },
+                "security": {
+                  "type": "string",
+                  "maxLength": 1024
+                }
+              },
+              "required": [
+                "default",
+                "cloudguard",
+                "iam",
+                "network",
+                "security"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "realm",
+            "region",
+            "regionShortName",
+            "cisLevel",
+            "notifications"
+          ],
+          "additionalProperties": false
+        },
+        "network": {
+          "type": "object",
+          "properties": {
+            "hubKind": {
+              "type": "string",
+              "enum": [
+                "hub_a",
+                "hub_b",
+                "hub_c",
+                "hub_e"
+              ]
+            },
+            "hubVcnCidr": {
+              "type": "string",
+              "maxLength": 1024
+            },
+            "subnets": {
+              "minItems": 1,
+              "maxItems": 64,
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$"
+                  },
+                  "cidr": {
+                    "type": "string",
+                    "maxLength": 1024
+                  },
+                  "locked": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "name",
+                  "cidr"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": [
+            "hubKind",
+            "hubVcnCidr",
+            "subnets"
+          ],
+          "additionalProperties": false
+        },
+        "environments": {
+          "maxItems": 32,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$"
+              },
+              "name": {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$"
+              },
+              "securityZone": {
+                "type": "boolean"
+              },
+              "projectNetworkEnabled": {
+                "type": "boolean"
+              },
+              "network": {
+                "type": "object",
+                "properties": {
+                  "vcnCidr": {
+                    "type": "string",
+                    "maxLength": 1024
+                  },
+                  "subnets": {
+                    "maxItems": 64,
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$"
+                        },
+                        "cidr": {
+                          "type": "string",
+                          "maxLength": 1024
+                        },
+                        "locked": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "name",
+                        "cidr"
+                      ],
+                      "additionalProperties": false
+                    }
+                  }
+                },
+                "required": [
+                  "vcnCidr",
+                  "subnets"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "securityZone",
+              "network"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "projects": {
+          "maxItems": 64,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$"
+              },
+              "name": {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$"
+              },
+              "environments": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "const": "all"
+                  },
+                  {
+                    "maxItems": 64,
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$"
+                    }
+                  }
+                ]
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "environments"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "platforms": {
+          "maxItems": 32,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$"
+              },
+              "key": {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "oke_simple",
+                  "custom"
+                ]
+              },
+              "environments": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "const": "all"
+                  },
+                  {
+                    "maxItems": 64,
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$"
+                    }
+                  }
+                ]
+              },
+              "vcnCidr": {
+                "type": "string",
+                "maxLength": 1024
+              },
+              "subnets": {
+                "minItems": 1,
+                "maxItems": 64,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$"
+                    },
+                    "cidr": {
+                      "type": "string",
+                      "maxLength": 1024
+                    },
+                    "locked": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "cidr"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "overrides": {
+                "type": "object",
+                "propertyNames": {
+                  "type": "string",
+                  "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$"
+                },
+                "additionalProperties": {
+                  "type": "object",
+                  "properties": {
+                    "vcnCidr": {
+                      "type": "string",
+                      "maxLength": 1024
+                    },
+                    "subnets": {
+                      "minItems": 1,
+                      "maxItems": 64,
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string",
+                            "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$"
+                          },
+                          "cidr": {
+                            "type": "string",
+                            "maxLength": 1024
+                          },
+                          "locked": {
+                            "type": "boolean"
+                          }
+                        },
+                        "required": [
+                          "name",
+                          "cidr"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "okeParams": {
+                "type": "object",
+                "properties": {
+                  "kubernetesVersion": {
+                    "type": "string",
+                    "maxLength": 1024
+                  },
+                  "servicesCidr": {
+                    "type": "string",
+                    "maxLength": 1024
+                  },
+                  "apiAllowedCidrs": {
+                    "maxItems": 64,
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "maxLength": 1024
+                    }
+                  },
+                  "workerImage": {
+                    "type": "string",
+                    "maxLength": 1024
+                  },
+                  "workerBootVolumeSize": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 32768
+                  },
+                  "cniType": {
+                    "type": "string",
+                    "enum": [
+                      "native",
+                      "overlay"
+                    ]
+                  },
+                  "clusterSize": {
+                    "type": "string",
+                    "enum": [
+                      "small",
+                      "medium",
+                      "large"
+                    ]
+                  },
+                  "podsCidr": {
+                    "type": "string",
+                    "maxLength": 1024
+                  },
+                  "createFss": {
+                    "type": "boolean"
+                  },
+                  "publicLoadBalancer": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "kubernetesVersion",
+                  "servicesCidr",
+                  "apiAllowedCidrs",
+                  "workerImage",
+                  "workerBootVolumeSize",
+                  "cniType",
+                  "createFss",
+                  "publicLoadBalancer"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "id",
+              "key",
+              "type",
+              "environments",
+              "vcnCidr",
+              "subnets"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "sharedPlatforms": {
+          "maxItems": 32,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$"
+              },
+              "key": {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$"
+              },
+              "type": {
+                "type": "string",
+                "const": "custom"
+              },
+              "vcnCidr": {
+                "type": "string",
+                "maxLength": 1024
+              },
+              "subnets": {
+                "minItems": 1,
+                "maxItems": 64,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$"
+                    },
+                    "cidr": {
+                      "type": "string",
+                      "maxLength": 1024
+                    },
+                    "locked": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "cidr"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            },
+            "required": [
+              "id",
+              "key",
+              "vcnCidr",
+              "subnets"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "exadata": {
+          "type": "object",
+          "properties": {
+            "exacc": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                },
+                "shared": {
+                  "type": "boolean"
+                },
+                "database": {
+                  "type": "string",
+                  "enum": [
+                    "shared",
+                    "per_environment"
+                  ]
+                },
+                "service": {
+                  "type": "string",
+                  "enum": [
+                    "none",
+                    "autonomous",
+                    "vmc",
+                    "both"
+                  ]
+                },
+                "autonomous": {
+                  "type": "boolean"
+                },
+                "environments": {
+                  "maxItems": 64,
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$"
+                  }
+                },
+                "projectDb": {
+                  "type": "object",
+                  "propertyNames": {
+                    "type": "string",
+                    "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$"
+                  },
+                  "additionalProperties": {
+                    "maxItems": 64,
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$"
+                    }
+                  }
+                },
+                "notifications": {
+                  "type": "object",
+                  "properties": {
+                    "useSingleRecipient": {
+                      "type": "boolean"
+                    },
+                    "default": {
+                      "type": "string",
+                      "maxLength": 1024
+                    },
+                    "fallbackDefault": {
+                      "type": "object",
+                      "properties": {
+                        "recipients": {
+                          "maxItems": 64,
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "maxLength": 1024
+                          }
+                        },
+                        "source": {
+                          "type": "string",
+                          "maxLength": 1024
+                        }
+                      },
+                      "required": [
+                        "recipients",
+                        "source"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "dbWorkloads": {
+                      "type": "string",
+                      "maxLength": 1024
+                    },
+                    "infraWorkloads": {
+                      "type": "string",
+                      "maxLength": 1024
+                    },
+                    "environmentInfraEmails": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string",
+                        "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$"
+                      },
+                      "additionalProperties": {
+                        "type": "string",
+                        "maxLength": 1024
+                      }
+                    },
+                    "environmentDbEmails": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string",
+                        "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$"
+                      },
+                      "additionalProperties": {
+                        "type": "string",
+                        "maxLength": 1024
+                      }
+                    },
+                    "projectEmails": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string",
+                        "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$"
+                      },
+                      "additionalProperties": {
+                        "type": "string",
+                        "maxLength": 1024
+                      }
+                    },
+                    "projects": {
+                      "type": "string",
+                      "maxLength": 1024
+                    }
+                  },
+                  "required": [
+                    "default"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "enabled",
+                "shared",
+                "environments",
+                "projectDb",
+                "notifications"
+              ],
+              "additionalProperties": false
+            },
+            "exacs": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                },
+                "infrastructure": {
+                  "type": "string",
+                  "enum": [
+                    "shared",
+                    "per_environment"
+                  ]
+                },
+                "database": {
+                  "type": "string",
+                  "enum": [
+                    "shared",
+                    "per_environment"
+                  ]
+                },
+                "service": {
+                  "type": "string",
+                  "enum": [
+                    "none",
+                    "autonomous",
+                    "vmc",
+                    "both"
+                  ]
+                },
+                "environments": {
+                  "maxItems": 64,
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$"
+                  }
+                },
+                "sharedVcnCidr": {
+                  "type": "string",
+                  "maxLength": 1024
+                },
+                "environmentVcnCidrs": {
+                  "type": "object",
+                  "propertyNames": {
+                    "type": "string",
+                    "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$"
+                  },
+                  "additionalProperties": {
+                    "type": "string",
+                    "maxLength": 1024
+                  }
+                },
+                "projectDb": {
+                  "type": "object",
+                  "propertyNames": {
+                    "type": "string",
+                    "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$"
+                  },
+                  "additionalProperties": {
+                    "maxItems": 64,
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$"
+                    }
+                  }
+                },
+                "notifications": {
+                  "type": "object",
+                  "properties": {
+                    "useSingleRecipient": {
+                      "type": "boolean"
+                    },
+                    "default": {
+                      "type": "string",
+                      "maxLength": 1024
+                    },
+                    "fallbackDefault": {
+                      "type": "object",
+                      "properties": {
+                        "recipients": {
+                          "maxItems": 64,
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "maxLength": 1024
+                          }
+                        },
+                        "source": {
+                          "type": "string",
+                          "maxLength": 1024
+                        }
+                      },
+                      "required": [
+                        "recipients",
+                        "source"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "dbWorkloads": {
+                      "type": "string",
+                      "maxLength": 1024
+                    },
+                    "infraWorkloads": {
+                      "type": "string",
+                      "maxLength": 1024
+                    },
+                    "environmentInfraEmails": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string",
+                        "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$"
+                      },
+                      "additionalProperties": {
+                        "type": "string",
+                        "maxLength": 1024
+                      }
+                    },
+                    "environmentDbEmails": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string",
+                        "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$"
+                      },
+                      "additionalProperties": {
+                        "type": "string",
+                        "maxLength": 1024
+                      }
+                    },
+                    "projectEmails": {
+                      "type": "object",
+                      "propertyNames": {
+                        "type": "string",
+                        "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$"
+                      },
+                      "additionalProperties": {
+                        "type": "string",
+                        "maxLength": 1024
+                      }
+                    },
+                    "projects": {
+                      "type": "string",
+                      "maxLength": 1024
+                    }
+                  },
+                  "required": [
+                    "default"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "required": [
+                "enabled",
+                "infrastructure",
+                "database",
+                "service",
+                "environments",
+                "sharedVcnCidr",
+                "environmentVcnCidrs",
+                "projectDb",
+                "notifications"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "exacc",
+            "exacs"
+          ],
+          "additionalProperties": false
+        },
+        "remotePeeringConnections": {
+          "maxItems": 32,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$"
+              },
+              "name": {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$"
+              },
+              "role": {
+                "type": "string",
+                "enum": [
+                  "acceptor",
+                  "requester"
+                ]
+              },
+              "remoteCidrs": {
+                "maxItems": 64,
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "maxLength": 1024
+                }
+              },
+              "peerRegionName": {
+                "type": "string",
+                "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$"
+              },
+              "peerId": {
+                "type": "string",
+                "maxLength": 1024
+              },
+              "peerTenancyOcid": {
+                "type": "string",
+                "maxLength": 1024
+              },
+              "requestorGroupOcid": {
+                "type": "string",
+                "maxLength": 1024
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "role",
+              "remoteCidrs",
+              "peerRegionName"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "version",
+        "foundation",
+        "network",
+        "environments",
+        "projects",
+        "platforms",
+        "sharedPlatforms",
+        "exadata"
+      ],
+      "additionalProperties": false
+    },
+    "evidence": {
+      "maxItems": 2000,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "field": {
+            "type": "string",
+            "maxLength": 1024
+          },
+          "source": {
+            "type": "string",
+            "maxLength": 1024
+          },
+          "locator": {
+            "type": "string",
+            "maxLength": 1024
+          }
+        },
+        "required": [
+          "field",
+          "source",
+          "locator"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "decisions": {
+      "maxItems": 1000,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "field": {
+            "type": "string",
+            "maxLength": 1024
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "confirmed",
+              "proposed"
+            ]
+          },
+          "rationale": {
+            "type": "string",
+            "maxLength": 1024
+          }
+        },
+        "required": [
+          "field",
+          "status",
+          "rationale"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "unresolvedItems": {
+      "maxItems": 1000,
+      "type": "array",
+      "items": {
+        "type": "string",
+        "maxLength": 1024
+      }
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "projectId",
+    "revision",
+    "name",
+    "configuration",
+    "evidence",
+    "decisions",
+    "unresolvedItems"
+  ],
+  "additionalProperties": false
+}

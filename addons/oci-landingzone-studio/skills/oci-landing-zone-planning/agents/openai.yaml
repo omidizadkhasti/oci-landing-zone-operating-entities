@@ -1,0 +1,7 @@
+interface:
+  display_name: "OCI Landing Zone Planning"
+  short_description: "Gather evidence and generate artifacts through MCP"
+  default_prompt: "Use $oci-landing-zone-planning to gather landing-zone requirements from the supplied evidence, resolve gaps, and generate reviewable artifacts through the approved MCP service."
+
+policy:
+  allow_implicit_invocation: true

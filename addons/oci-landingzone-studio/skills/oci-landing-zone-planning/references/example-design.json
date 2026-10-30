@@ -1,0 +1,149 @@
+{
+  "schemaVersion": "1.0",
+  "projectId": "smoke-test",
+  "revision": 1,
+  "name": "example",
+  "configuration": {
+    "version": "0.20.0",
+    "foundation": {
+      "realm": "oc1",
+      "region": "eu-frankfurt-1",
+      "regionShortName": "fra",
+      "cisLevel": 2,
+      "notifications": {
+        "useSingleRecipient": true,
+        "default": "operations@example.com",
+        "cloudguard": "",
+        "iam": "",
+        "network": "",
+        "security": ""
+      }
+    },
+    "environments": [
+      {
+        "id": "environment-1",
+        "name": "prod",
+        "securityZone": true,
+        "network": {
+          "vcnCidr": "10.0.64.0/21",
+          "subnets": [
+            {
+              "name": "web",
+              "cidr": "10.0.64.0/24"
+            },
+            {
+              "name": "app",
+              "cidr": "10.0.65.0/24"
+            },
+            {
+              "name": "db",
+              "cidr": "10.0.66.0/24"
+            },
+            {
+              "name": "infra",
+              "cidr": "10.0.67.0/24"
+            }
+          ]
+        }
+      },
+      {
+        "id": "environment-2",
+        "name": "preprod",
+        "securityZone": false,
+        "network": {
+          "vcnCidr": "10.0.128.0/21",
+          "subnets": [
+            {
+              "name": "web",
+              "cidr": "10.0.128.0/24"
+            },
+            {
+              "name": "app",
+              "cidr": "10.0.129.0/24"
+            },
+            {
+              "name": "db",
+              "cidr": "10.0.130.0/24"
+            },
+            {
+              "name": "infra",
+              "cidr": "10.0.131.0/24"
+            }
+          ]
+        }
+      }
+    ],
+    "network": {
+      "hubKind": "hub_a",
+      "hubVcnCidr": "10.0.0.0/21",
+      "subnets": [
+        {
+          "name": "fw-dmz",
+          "cidr": "10.0.0.0/24"
+        },
+        {
+          "name": "lb",
+          "cidr": "10.0.1.0/24"
+        },
+        {
+          "name": "fw-int",
+          "cidr": "10.0.2.0/24"
+        },
+        {
+          "name": "mgmt",
+          "cidr": "10.0.3.0/24"
+        },
+        {
+          "name": "mon",
+          "cidr": "10.0.4.0/24"
+        },
+        {
+          "name": "dns",
+          "cidr": "10.0.5.0/24"
+        }
+      ]
+    },
+    "projects": [
+      {
+        "id": "project-1",
+        "name": "proj1",
+        "environments": "all"
+      }
+    ],
+    "platforms": [],
+    "sharedPlatforms": [],
+    "exadata": {
+      "exacc": {
+        "enabled": false,
+        "shared": true,
+        "database": "shared",
+        "service": "none",
+        "environments": [],
+        "projectDb": {},
+        "notifications": {
+          "useSingleRecipient": true,
+          "default": "",
+          "projectEmails": {}
+        }
+      },
+      "exacs": {
+        "enabled": false,
+        "infrastructure": "shared",
+        "database": "shared",
+        "service": "none",
+        "environments": [],
+        "sharedVcnCidr": "10.0.24.0/21",
+        "environmentVcnCidrs": {},
+        "projectDb": {},
+        "notifications": {
+          "useSingleRecipient": true,
+          "default": "",
+          "projectEmails": {}
+        }
+      }
+    }
+  },
+  "evidence": [],
+  "decisions": [],
+  "unresolvedItems": []
+}

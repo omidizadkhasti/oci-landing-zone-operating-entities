@@ -137,6 +137,15 @@ Do not copy existing credentials across namespaces without explicit authorizatio
 
 ## Rollback and contribution
 
+The portable agent skill is
+[`oci-landing-zone-planning`](../skills/oci-landing-zone-planning/SKILL.md).
+It covers workbook/FDE discovery, complete model assembly, the real MCP protocol,
+artifact integrity and review boundaries. Package qualification is recorded in
+[`qualification/skill-v1-readiness.md`](qualification/skill-v1-readiness.md).
+It is not installed or activated by this service deployment. A trusted publisher
+must admit its exact package digest, bind the skill/tools/output slots to the
+approved Planning profile, and complete live qualification before activation.
+
 For an existing release, use `helm rollback landingzone-mcp <revision> -n
 oci-landing-zone --wait`. For the initial pilot, uninstall the Helm release to
 remove the service; the PVC is intentionally retained. Remove pilot Secrets and

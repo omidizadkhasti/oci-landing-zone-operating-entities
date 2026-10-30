@@ -1,0 +1,51 @@
+{
+  "skill": "oci-landing-zone-planning",
+  "version": "1.0.0",
+  "archive": "oci-landing-zone-planning-1.0.0.zip",
+  "sha256": "c902ff62e897f4f6f857f94001468a0f7daa4539e423fbfc63184862a53c545a",
+  "bytes": 14760,
+  "serviceContract": {
+    "serviceVersion": "0.1.0",
+    "schemaVersion": "1.0",
+    "studioModelVersion": "0.20.0",
+    "sourceCommit": "4d2a660"
+  },
+  "files": [
+    {
+      "path": "LICENSE.txt",
+      "bytes": 1867,
+      "sha256": "2a1962a026e2bd221620c9745e9d0f5681dd407180b45f43c827c75726bb11be"
+    },
+    {
+      "path": "SKILL.md",
+      "bytes": 8268,
+      "sha256": "c0a2f58bf3e9153a36372c870d20cae6379c7e6fc4bc57b1fac6ea8b3de272bb"
+    },
+    {
+      "path": "agents/openai.yaml",
+      "bytes": 369,
+      "sha256": "ec8d2b597fd0237a8f6e34168e2f440b8c6ef3d5a0bd93e0e796fc0a72b8a4c5"
+    },
+    {
+      "path": "references/design.schema.json",
+      "bytes": 29539,
+      "sha256": "c8e9b6469a86f5fd769f7361a32c15b0e241b277b11e36331699f66acf3035f1"
+    },
+    {
+      "path": "references/discovery.md",
+      "bytes": 8294,
+      "sha256": "4acaf20803a73fb7a3e2a0f152eb7aa8bccef324f0302583d71d2a79282b63ce"
+    },
+    {
+      "path": "references/example-design.json",
+      "bytes": 3255,
+      "sha256": "b0c4741c9cc420cfac47f3cc9728066b2d5984a6f8f02df0326c5a35d506c0d6"
+    },
+    {
+      "path": "references/mcp-protocol.md",
+      "bytes": 5773,
+      "sha256": "b595d5c0eb2dcd21fb9604158c09f38f217f84ba9ab2065bc2bbb19653fe7334"
+    }
+  ],
+  "activation": "not_installed_or_published"
+}
