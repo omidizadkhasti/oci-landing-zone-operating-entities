@@ -21,6 +21,27 @@ const exadataNotifications = z.strictObject({
 const service = z.enum(['none', 'autonomous', 'vmc', 'both']);
 const projectDb = z.record(key, names);
 const override = z.strictObject({ vcnCidr: text.optional(), subnets: subnets.optional() });
+const okeParamsSchema = z.strictObject({
+      kubernetesVersion: text, servicesCidr: text, apiAllowedCidrs: z.array(text).max(64), workerImage: text,
+      workerBootVolumeSize: z.number().int().min(1).max(32768), cniType: z.enum(['native', 'overlay']),
+      clusterSize: z.enum(['small', 'medium', 'large']).optional(), podsCidr: text.optional(),
+      createFss: z.boolean(), publicLoadBalancer: z.boolean(),
+});
+const platform = z.strictObject({
+    id: key, key, type: z.enum(['oke_simple', 'custom']), environments: placement, vcnCidr: text, subnets,
+    overrides: z.record(key, override).optional(),
+    okeParams: okeParamsSchema.optional(),
+  });
+// Empty subnet arrays explicitly select generator-owned automatic OKE layout.
+// All manual/custom and hub subnet contracts retain their nonempty requirement.
+const automaticOkePlatform = platform.extend({
+  type: z.literal('oke_simple'),
+  subnets: z.array(subnet).length(0),
+  okeParams: okeParamsSchema.extend({ clusterSize: z.enum(['small', 'medium', 'large']) }),
+  overrides: z.record(key, z.strictObject({
+    vcnCidr: text.optional(), subnets: z.array(subnet).length(0).optional(),
+  })).optional(),
+});
 export const modelSchema = z.strictObject({
   version: z.literal(LZ_MODEL_VERSION),
   foundation: z.strictObject({
@@ -34,16 +55,7 @@ export const modelSchema = z.strictObject({
     network: z.strictObject({ vcnCidr: text, subnets: z.array(subnet).max(64) }),
   })).max(32),
   projects: z.array(z.strictObject({ id: key, name: key, environments: placement })).max(64),
-  platforms: z.array(z.strictObject({
-    id: key, key, type: z.enum(['oke_simple', 'custom']), environments: placement, vcnCidr: text, subnets,
-    overrides: z.record(key, override).optional(),
-    okeParams: z.strictObject({
-      kubernetesVersion: text, servicesCidr: text, apiAllowedCidrs: z.array(text).max(64), workerImage: text,
-      workerBootVolumeSize: z.number().int().min(1).max(32768), cniType: z.enum(['native', 'overlay']),
-      clusterSize: z.enum(['small', 'medium', 'large']).optional(), podsCidr: text.optional(),
-      createFss: z.boolean(), publicLoadBalancer: z.boolean(),
-    }).optional(),
-  })).max(32),
+  platforms: z.array(z.union([platform, automaticOkePlatform])).max(32),
   sharedPlatforms: z.array(z.strictObject({ id: key, key, type: z.literal('custom').optional(), ...network.shape })).max(32),
   exadata: z.strictObject({
     exacc: z.strictObject({

@@ -280,188 +280,375 @@
           "maxItems": 32,
           "type": "array",
           "items": {
-            "type": "object",
-            "properties": {
-              "id": {
-                "type": "string",
-                "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$"
-              },
-              "key": {
-                "type": "string",
-                "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$"
-              },
-              "type": {
-                "type": "string",
-                "enum": [
-                  "oke_simple",
-                  "custom"
-                ]
-              },
-              "environments": {
-                "anyOf": [
-                  {
-                    "type": "string",
-                    "const": "all"
-                  },
-                  {
-                    "maxItems": 64,
-                    "type": "array",
-                    "items": {
-                      "type": "string",
-                      "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$"
-                    }
-                  }
-                ]
-              },
-              "vcnCidr": {
-                "type": "string",
-                "maxLength": 1024
-              },
-              "subnets": {
-                "minItems": 1,
-                "maxItems": 64,
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
-                    "name": {
-                      "type": "string",
-                      "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$"
-                    },
-                    "cidr": {
-                      "type": "string",
-                      "maxLength": 1024
-                    },
-                    "locked": {
-                      "type": "boolean"
-                    }
-                  },
-                  "required": [
-                    "name",
-                    "cidr"
-                  ],
-                  "additionalProperties": false
-                }
-              },
-              "overrides": {
-                "type": "object",
-                "propertyNames": {
-                  "type": "string",
-                  "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$"
-                },
-                "additionalProperties": {
-                  "type": "object",
-                  "properties": {
-                    "vcnCidr": {
-                      "type": "string",
-                      "maxLength": 1024
-                    },
-                    "subnets": {
-                      "minItems": 1,
-                      "maxItems": 64,
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "name": {
-                            "type": "string",
-                            "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$"
-                          },
-                          "cidr": {
-                            "type": "string",
-                            "maxLength": 1024
-                          },
-                          "locked": {
-                            "type": "boolean"
-                          }
-                        },
-                        "required": [
-                          "name",
-                          "cidr"
-                        ],
-                        "additionalProperties": false
-                      }
-                    }
-                  },
-                  "additionalProperties": false
-                }
-              },
-              "okeParams": {
+            "anyOf": [
+              {
                 "type": "object",
                 "properties": {
-                  "kubernetesVersion": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$"
+                  },
+                  "key": {
+                    "type": "string",
+                    "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$"
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "oke_simple",
+                      "custom"
+                    ]
+                  },
+                  "environments": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "const": "all"
+                      },
+                      {
+                        "maxItems": 64,
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$"
+                        }
+                      }
+                    ]
+                  },
+                  "vcnCidr": {
                     "type": "string",
                     "maxLength": 1024
                   },
-                  "servicesCidr": {
-                    "type": "string",
-                    "maxLength": 1024
-                  },
-                  "apiAllowedCidrs": {
+                  "subnets": {
+                    "minItems": 1,
                     "maxItems": 64,
                     "type": "array",
                     "items": {
-                      "type": "string",
-                      "maxLength": 1024
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$"
+                        },
+                        "cidr": {
+                          "type": "string",
+                          "maxLength": 1024
+                        },
+                        "locked": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "name",
+                        "cidr"
+                      ],
+                      "additionalProperties": false
                     }
                   },
-                  "workerImage": {
-                    "type": "string",
-                    "maxLength": 1024
+                  "overrides": {
+                    "type": "object",
+                    "propertyNames": {
+                      "type": "string",
+                      "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$"
+                    },
+                    "additionalProperties": {
+                      "type": "object",
+                      "properties": {
+                        "vcnCidr": {
+                          "type": "string",
+                          "maxLength": 1024
+                        },
+                        "subnets": {
+                          "minItems": 1,
+                          "maxItems": 64,
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "name": {
+                                "type": "string",
+                                "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$"
+                              },
+                              "cidr": {
+                                "type": "string",
+                                "maxLength": 1024
+                              },
+                              "locked": {
+                                "type": "boolean"
+                              }
+                            },
+                            "required": [
+                              "name",
+                              "cidr"
+                            ],
+                            "additionalProperties": false
+                          }
+                        }
+                      },
+                      "additionalProperties": false
+                    }
                   },
-                  "workerBootVolumeSize": {
-                    "type": "integer",
-                    "minimum": 1,
-                    "maximum": 32768
-                  },
-                  "cniType": {
-                    "type": "string",
-                    "enum": [
-                      "native",
-                      "overlay"
-                    ]
-                  },
-                  "clusterSize": {
-                    "type": "string",
-                    "enum": [
-                      "small",
-                      "medium",
-                      "large"
-                    ]
-                  },
-                  "podsCidr": {
-                    "type": "string",
-                    "maxLength": 1024
-                  },
-                  "createFss": {
-                    "type": "boolean"
-                  },
-                  "publicLoadBalancer": {
-                    "type": "boolean"
+                  "okeParams": {
+                    "type": "object",
+                    "properties": {
+                      "kubernetesVersion": {
+                        "type": "string",
+                        "maxLength": 1024
+                      },
+                      "servicesCidr": {
+                        "type": "string",
+                        "maxLength": 1024
+                      },
+                      "apiAllowedCidrs": {
+                        "maxItems": 64,
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "maxLength": 1024
+                        }
+                      },
+                      "workerImage": {
+                        "type": "string",
+                        "maxLength": 1024
+                      },
+                      "workerBootVolumeSize": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 32768
+                      },
+                      "cniType": {
+                        "type": "string",
+                        "enum": [
+                          "native",
+                          "overlay"
+                        ]
+                      },
+                      "clusterSize": {
+                        "type": "string",
+                        "enum": [
+                          "small",
+                          "medium",
+                          "large"
+                        ]
+                      },
+                      "podsCidr": {
+                        "type": "string",
+                        "maxLength": 1024
+                      },
+                      "createFss": {
+                        "type": "boolean"
+                      },
+                      "publicLoadBalancer": {
+                        "type": "boolean"
+                      }
+                    },
+                    "required": [
+                      "kubernetesVersion",
+                      "servicesCidr",
+                      "apiAllowedCidrs",
+                      "workerImage",
+                      "workerBootVolumeSize",
+                      "cniType",
+                      "createFss",
+                      "publicLoadBalancer"
+                    ],
+                    "additionalProperties": false
                   }
                 },
                 "required": [
-                  "kubernetesVersion",
-                  "servicesCidr",
-                  "apiAllowedCidrs",
-                  "workerImage",
-                  "workerBootVolumeSize",
-                  "cniType",
-                  "createFss",
-                  "publicLoadBalancer"
+                  "id",
+                  "key",
+                  "type",
+                  "environments",
+                  "vcnCidr",
+                  "subnets"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$"
+                  },
+                  "key": {
+                    "type": "string",
+                    "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$"
+                  },
+                  "type": {
+                    "type": "string",
+                    "const": "oke_simple"
+                  },
+                  "environments": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "const": "all"
+                      },
+                      {
+                        "maxItems": 64,
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$"
+                        }
+                      }
+                    ]
+                  },
+                  "vcnCidr": {
+                    "type": "string",
+                    "maxLength": 1024
+                  },
+                  "subnets": {
+                    "minItems": 0,
+                    "maxItems": 0,
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$"
+                        },
+                        "cidr": {
+                          "type": "string",
+                          "maxLength": 1024
+                        },
+                        "locked": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "name",
+                        "cidr"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "overrides": {
+                    "type": "object",
+                    "propertyNames": {
+                      "type": "string",
+                      "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$"
+                    },
+                    "additionalProperties": {
+                      "type": "object",
+                      "properties": {
+                        "vcnCidr": {
+                          "type": "string",
+                          "maxLength": 1024
+                        },
+                        "subnets": {
+                          "minItems": 0,
+                          "maxItems": 0,
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "name": {
+                                "type": "string",
+                                "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_-]{0,63}$"
+                              },
+                              "cidr": {
+                                "type": "string",
+                                "maxLength": 1024
+                              },
+                              "locked": {
+                                "type": "boolean"
+                              }
+                            },
+                            "required": [
+                              "name",
+                              "cidr"
+                            ],
+                            "additionalProperties": false
+                          }
+                        }
+                      },
+                      "additionalProperties": false
+                    }
+                  },
+                  "okeParams": {
+                    "type": "object",
+                    "properties": {
+                      "kubernetesVersion": {
+                        "type": "string",
+                        "maxLength": 1024
+                      },
+                      "servicesCidr": {
+                        "type": "string",
+                        "maxLength": 1024
+                      },
+                      "apiAllowedCidrs": {
+                        "maxItems": 64,
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "maxLength": 1024
+                        }
+                      },
+                      "workerImage": {
+                        "type": "string",
+                        "maxLength": 1024
+                      },
+                      "workerBootVolumeSize": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 32768
+                      },
+                      "cniType": {
+                        "type": "string",
+                        "enum": [
+                          "native",
+                          "overlay"
+                        ]
+                      },
+                      "clusterSize": {
+                        "type": "string",
+                        "enum": [
+                          "small",
+                          "medium",
+                          "large"
+                        ]
+                      },
+                      "podsCidr": {
+                        "type": "string",
+                        "maxLength": 1024
+                      },
+                      "createFss": {
+                        "type": "boolean"
+                      },
+                      "publicLoadBalancer": {
+                        "type": "boolean"
+                      }
+                    },
+                    "required": [
+                      "kubernetesVersion",
+                      "servicesCidr",
+                      "apiAllowedCidrs",
+                      "workerImage",
+                      "workerBootVolumeSize",
+                      "cniType",
+                      "clusterSize",
+                      "createFss",
+                      "publicLoadBalancer"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "required": [
+                  "id",
+                  "key",
+                  "type",
+                  "environments",
+                  "vcnCidr",
+                  "subnets",
+                  "okeParams"
                 ],
                 "additionalProperties": false
               }
-            },
-            "required": [
-              "id",
-              "key",
-              "type",
-              "environments",
-              "vcnCidr",
-              "subnets"
-            ],
-            "additionalProperties": false
+            ]
           }
         },
         "sharedPlatforms": {
