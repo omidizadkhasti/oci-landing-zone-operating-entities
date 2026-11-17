@@ -385,3 +385,15 @@ describe('toDrawioXml', () => {
     expect(xml).toContain('hub-vcn&#10;10.0.0.0/21');
   });
 });
+
+
+it('fills route-table label bounds so Draw.io cannot add implicit top padding and clip the last route', () => {
+  const node: DiagramModel['nodes'][number] = {
+    id:'routes',kind:'routetable',label:'rt-example-hub',x:0,y:0,width:310,height:227,
+    rtColumns:'vcn',rtRows:Array.from({length:12},(_,i)=>({destination:`10.0.${i}.0/24`,targetType:'Private IP',target:'firewall-example',routeType:'Static'})),
+  };
+  const xml=toDrawioXml({nodes:[node],edges:[]});
+  expect(xml).toMatch(/id="routes"[^>]*style="[^"]*overflow=fill;/);
+  expect(xml).toContain('10.0.11.0/24');
+  expect(xml).toContain('height="227"');
+});

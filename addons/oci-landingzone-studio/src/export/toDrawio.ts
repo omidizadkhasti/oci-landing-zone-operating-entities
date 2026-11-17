@@ -185,7 +185,9 @@ function nodeStyle(node: DiagramNode): string {
     case 'project':
       return `rounded=0;whiteSpace=wrap;html=1;align=center;verticalAlign=${node.container ? 'top' : 'middle'};fillColor=#ECEAE8;strokeColor=${oracle.compGrayBorder};fontColor=${oracle.ink};fontStyle=1;fontSize=12;`;
     case 'routetable':
-      return `rounded=0;whiteSpace=wrap;html=1;verticalAlign=top;align=left;spacing=0;spacingLeft=0;spacingTop=0;fillColor=#ffffff;strokeColor=${RT_TONE_COLORS[node.rtTone ?? 'hub']};`;
+      // Fill the cell bounds: Draw.io otherwise adds implicit label padding above
+      // the HTML, clipping the final route rows despite correct content metrics.
+      return `rounded=0;whiteSpace=wrap;html=1;overflow=fill;verticalAlign=top;align=left;spacing=0;spacingLeft=0;spacingTop=0;fillColor=#ffffff;strokeColor=${RT_TONE_COLORS[node.rtTone ?? 'hub']};`;
     case 'rtdot':
       return `ellipse;html=1;fillColor=${node.rtDotConfigured === false ? '#b0aca8' : RT_TONE_COLORS[node.rtDotTone ?? 'hub']};strokeColor=#ffffff;strokeWidth=1.5;`;
     case 'resourcegroup':
